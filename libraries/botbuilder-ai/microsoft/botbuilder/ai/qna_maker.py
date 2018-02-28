@@ -4,20 +4,19 @@ import requests
 
 class QnAMaker:
 
-    __qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v3.0/knowledgebases/'
-    __json_mime_type = 'application/json'
-    __api_management_header = 'Ocp-Apim-Subscription-Key'
-
     def __init__(self, options, http_client):
+        self.__qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v3.0/knowledgebases/'
+        self.__json_mime_type = 'application/json'
+        self.__api_management_header = 'Ocp-Apim-Subscription-Key'
         
-        self.__http_client = _http_client or False
+        self.__http_client = http_client or False
         if not self.__http_client:
             raise TypeError('HTTP Client failed')
         self.__options = options or False
         if not self.__options:
             raise TypeError('Options config error')
 
-        self.__answerUrl = "%s%s/generateanswer" % (__qnaMakerServiceEndpoint,options.knowledge_base_id)
+        self.__answerUrl = "%s%s/generateanswer" % (self.__qnaMakerServiceEndpoint,options.knowledge_base_id)
 
         if self.__options.ScoreThreshold == 0:
             self.__options.ScoreThreshold = 0.3 #Note - SHOULD BE 0.3F 'FLOAT'
@@ -33,7 +32,7 @@ class QnAMaker:
 
     async def get_answers(question):        # HTTP call
         headers = {
-            __api_management_header : self.__options.subscription_key,
+            self.__api_management_header : self.__options.subscription_key,
             "Content-Type" : __json_mime_type
         }
         
