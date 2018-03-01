@@ -16,7 +16,7 @@ class QnAMaker(object):
         if not self.__options:
             raise TypeError('Options config error')
 
-        self.__answerUrl = "%s%s/generateanswer" % (self.__qnaMakerServiceEndpoint,options.knowledge_base_id)
+        self.__answerUrl = "%s%s/generateanswer" % (self.__qnaMakerServiceEndpoint, options.knowledge_base_id)
 
         if self.__options.ScoreThreshold == 0:
             self.__options.ScoreThreshold = 0.3  # Note - SHOULD BE 0.3F 'FLOAT'
@@ -40,8 +40,9 @@ class QnAMaker(object):
             "question": question
         })
         # POST request to QnA Service
-        content = requests.post(self.__answerUrl, headers=headers, data=payload)
-        return content.json()
+        content = requests.post(self.__answerUrl, headers=headers, data=payload).json()
+        qna_result = QnaMakerResult(content)
+        return qna_result
 
 
 class QnAMakerOptions(object):
@@ -60,16 +61,15 @@ class MetaData(object):
         self.value = value
 
 
-class QueryResult(object):
-    def __init__(self, questions, answer, score, metadata, source, qna_id):
-        self.questions = questions
-        self.answer = answer
-        self.score = score
+class QnaMakerResult(object):
+    def __init__(self, qna_response=None, metadata=None, source=None, qna_id=None):
+        self.__dict__ = qna_response
+        self.question = self.__dict__['answers'][0]['questions'][0]
+        self.answer = self.__dict__['answers'][0]['answer']
+        self.score = self.__dict__['answers'][0]['score']
         self.metadata = metadata
         self.source = source
         self.qna_id = qna_id
 
 
-class QueryResults(object):
-    def __init__(self, answers):
-        self.__answers = answers
+
