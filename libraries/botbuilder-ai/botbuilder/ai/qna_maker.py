@@ -1,38 +1,34 @@
 import json
-import asyncio
 import requests
 
 
 class QnAMaker(object):
-    def __init__(self, options, http_client):
+    def __init__(self, options):
         self.__qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v3.0/knowledgebases/'
         self.__json_mime_type = 'application/json'
         self.__api_management_header = 'Ocp-Apim-Subscription-Key'
-        
-        self.__http_client = http_client or False
-        if not self.__http_client:
-            raise TypeError('HTTP Client failed')
+
         self.__options = options or False
         if not self.__options:
             raise TypeError('Options config error')
 
-        self.__answerUrl = "%s%s/generateanswer" % (self.__qnaMakerServiceEndpoint, options.knowledge_base_id)
+        self.__answerUrl = "%s%s/generateanswer" % (self.__qnaMakerServiceEndpoint, options["knowledge_base_id"])
 
-        if self.__options.ScoreThreshold == 0:
-            self.__options.ScoreThreshold = 0.3  # Note - SHOULD BE 0.3F 'FLOAT'
+        if self.__options.get("score_threshold", None) is None:
+            self.__options["score_threshold"] = 0.3  # Note - SHOULD BE 0.3F 'FLOAT'
         
-        if self.__options.Top == 0:
-            self.__options.Top = 1
+        if self.__options.get("top", None) is None or 0:
+            self.__options["top"] = 1
         
-        if self.__options.StrictFilters is None:
-            self.__options.StrictFilters = MetaData()
+        if self.__options.get("strict_filters", None) is None:
+            self.__options["strict_filters"] = MetaData()
 
-        if self.__options.MetadataBoost is None:
-            self.__options.MetadataBoost = MetaData()
+        if self.__options.get("meta_data_boost", None) is None:
+            self.__options["meta_data_boost"] = MetaData()
 
-    async def get_answers(self, question):        # HTTP call
+    def get_answers(self, question):        # HTTP call
         headers = {
-            self.__api_management_header: self.__options.subscription_key,
+            self.__api_management_header: self.__options["subscription_key"],
             "Content-Type": self.__json_mime_type
         }
         
@@ -56,7 +52,7 @@ class QnAMakerOptions(object):
 
 
 class MetaData(object):
-    def __init__(self, name, value):
+    def __init__(self, name=None, value=None):
         self.name = name
         self.value = value
 

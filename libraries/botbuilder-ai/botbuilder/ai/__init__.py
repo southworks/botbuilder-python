@@ -6,11 +6,11 @@
 #------------------------------------------------------------------------
 
 from .language_map import LanguageMap
-from .qna_maker import QnAMaker, QnAMakerOptions, MetaData, QueryResult, QueryResults
+from .qna_maker import QnAMaker, QnAMakerOptions, MetaData, QnaMakerResult
 
 __all__ = ['LanguageMap',
            'QnAMaker',
            'QnAMakerOptions',
            'MetaData',
-           'QueryResult',
-           'QueryResults']
+           'QnaMakerResult'
+        ]
