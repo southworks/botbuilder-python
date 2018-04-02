@@ -7,10 +7,12 @@
 
 from .language_map import LanguageMap
 from .qna_maker import QnAMaker, QnAMakerOptions, MetaData, QnaMakerResult
+from .qna_maker_middleware import QnaMakerMiddleware
 
 __all__ = ['LanguageMap',
            'QnAMaker',
            'QnAMakerOptions',
            'MetaData',
-           'QnaMakerResult'
+           'QnaMakerResult',
+           'QnaMakerMiddleware'
         ]
