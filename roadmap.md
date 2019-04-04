@@ -15,12 +15,44 @@ Legend of annotations:
 ## [Timeframe] 2019
 - Bring Python to parity with C# and JavaSctipt
 - State management in Python (?)
-- Middleware infrastructure for Pyhon
+- Middleware infrastructure for Pyhon (90%)
 - Prompts and dialog stack in Python
 - Make 2-3 new samples (at least 1 of them leveraging NLP tools like spacy)
 - Update current samples if necessary
 - Update current docs
 - Implement code coverage tool to assess current state (and probably push cov)
+
+### Conectivity
+- connector / schema *half green*
+- (1) adapter + middleware
+- OAuth support & gov *empty red*
+  - revamp auth (adal) 
+
+### Infrastructure
+- build
+- packaging publishing
+- test automation
+- special packaging - notebooks etc.
+
+### Telemetry
+- transcript
+- app insights
+
+
+### Luis & QnA (3)
+
+### Dialogs
+
+### Azure (Cosmos & Blob)
+
+### Samples (2)
+- notebooks
+- spacy as multiple intent recognizer
+- add john's spacy sample
+
+
+----------------------------------------------------------------
+
 
 
 ## December 2018 (4.2.x) 
