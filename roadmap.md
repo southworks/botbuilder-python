@@ -13,45 +13,39 @@ Legend of annotations:
 | :triangular_flag_on_post: | postponed |
 
 ## [Timeframe] 2019
-- Bring Python to parity with C# and JavaSctipt
-- State management in Python (?)
-- Middleware infrastructure for Pyhon (90%)
-- Prompts and dialog stack in Python
-- Make 2-3 new samples (at least 1 of them leveraging NLP tools like spacy)
-- Update current samples if necessary
-- Update current docs
-- Implement code coverage tool to assess current state (and probably push cov)
 
-### Conectivity
-- connector / schema *half green*
-- (1) adapter + middleware
-- OAuth support & gov *empty red*
-  - revamp auth (adal) 
+### (1) Infrastructure [half green] 
+- build [half green]
+- packaging publishing [half green]
+- test automation [green]
+- code coverage tooling [half red]
 
-### Infrastructure (half green)
-- build
-- packaging publishing
-- test automation
-- special packaging - notebooks etc.
-
-### Telemetry (5)
-- transcript
-- app insights
-
-
-### Luis & QnA (3)
-
-### Dialogs + Prompts (4)
-
-### Azure (Cosmos & Blob) (4)
-
-### Samples (2)
+### (1) Conectivity [3 weeks]
+- connector / schema [green]
+- adapter [empty red] + middleware [empty green]
+- OAuth support & gov [empty red]
+  - revamp auth (adal)
+  
+### (2) Samples [3 weeks]
 - notebooks
 - spacy as multiple intent recognizer
 - luis sample
 - add john's spacy sample
+- update current samples
 
-### Timex (4)
+### (3) Luis & QnA [red] [1 week]
+
+### (4) Dialogs + Prompts [red] [2 weeks]
+
+### (4) Azure (Cosmos & Blob) [red] [1 week]
+
+### (4) Timex [half red] [1 week]
+
+### (5) Telemetry [red] [2 weeks]
+- transcript
+- app insights
+
+### (?) Docs [red] [2 weeks]
 
 
 ----------------------------------------------------------------
