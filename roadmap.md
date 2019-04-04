@@ -1,3 +1,5 @@
+# Roadmap proposal
+
 This page provides a roadmap for the v4 SDK. Bot Builder v4 SDK builds on the feedback and learnings from the prior Bot Builder SDKs. It introduces the right levels of abstraction while enabling rich componentization of the bot building blocks. You can start with a simple bot and grow your bot in sophistication using a modular and extensible framework.
 
 Legend of annotations: 
@@ -10,17 +12,23 @@ Legend of annotations:
 | :muscle: | stretch goal |
 | :triangular_flag_on_post: | postponed |
 
+## [Timeframe] 2019
+- Bring Python to parity with C# and JavaSctipt
+- State management in Python (?)
+- Middleware infrastructure for Pyhon
+- Prompts and dialog stack in Python
+- Make 2-3 new samples (at least 1 of them leveraging NLP tools like spacy)
+- Update current samples if necessary
+- Update current docs
+- Implement code coverage tool to assess current state (and probably push cov)
+
+
 ## December 2018 (4.2.x) 
-- Bring Python to parity with C# and JavaSctipt )
 - Regression tests across Python
 - Date time lib for Python
-- State management in Python
 - Regression tests across Python
 - Date time lib for Python
 - LUIS and QnA recognizer for Python
-- Middleware infrastructure for Pyhon
-- Prompts and dialog stack in Python
-- 'core' samples available for Python
 - Final docs, samples and UA content
 
 ## August 2018
