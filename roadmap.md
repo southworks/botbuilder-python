@@ -28,27 +28,30 @@ Legend of annotations:
 - OAuth support & gov *empty red*
   - revamp auth (adal) 
 
-### Infrastructure
+### Infrastructure (half green)
 - build
 - packaging publishing
 - test automation
 - special packaging - notebooks etc.
 
-### Telemetry
+### Telemetry (5)
 - transcript
 - app insights
 
 
 ### Luis & QnA (3)
 
-### Dialogs
+### Dialogs + Prompts (4)
 
-### Azure (Cosmos & Blob)
+### Azure (Cosmos & Blob) (4)
 
 ### Samples (2)
 - notebooks
 - spacy as multiple intent recognizer
+- luis sample
 - add john's spacy sample
+
+### Timex (4)
 
 
 ----------------------------------------------------------------
