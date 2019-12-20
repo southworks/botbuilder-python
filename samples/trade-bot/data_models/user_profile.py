@@ -7,8 +7,8 @@
 
 
 class UserProfile:
-    def __init__(self, name: str = None, transport: str = None, age: int = 0, input: str = ""):
+    def __init__(self, name: str = None, transport: str = None, age: int = 0):
         self.name = name
         self.transport = transport
         self.age = age
-
+        self.input = input
