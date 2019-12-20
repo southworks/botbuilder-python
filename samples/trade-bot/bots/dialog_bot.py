@@ -1,8 +1,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-from botbuilder.core import ActivityHandler, ConversationState, TurnContext, UserState
+from botbuilder.core import ActivityHandler, ConversationState, TurnContext, UserState, MessageFactory
 from botbuilder.dialogs import Dialog
+from botbuilder.schema import ChannelAccount
 from helpers.dialog_helper import DialogHelper
 
 
@@ -49,3 +50,15 @@ class DialogBot(ActivityHandler):
             turn_context,
             self.conversation_state.create_property("DialogState"),
         )
+
+    async def on_members_added_activity(
+        self, members_added: ChannelAccount, turn_context: TurnContext
+    ):
+        for member in members_added:
+            if member.id != turn_context.activity.recipient.id:
+                reply = MessageFactory.text(
+                    "Welcome to TradeBot. "
+                    + "This bot will try to show you the integration between BotBuilder and Recognizers-Text. "
+                    + "Please type anything to get started."
+                )
+                await turn_context.send_activity(reply)
