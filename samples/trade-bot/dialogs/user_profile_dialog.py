@@ -34,9 +34,7 @@ class UserProfileDialog(ComponentDialog):
                     self.options_step,
                     self.portfolio_show_step,
                     self.next_step,
-                    self.name_step,
-                    self.name_confirm_step,
-                    self.summary_step
+                    self.check_is_info_ok
                 ],
             )
         )
@@ -53,24 +51,10 @@ class UserProfileDialog(ComponentDialog):
 
         self.initial_dialog_id = WaterfallDialog.__name__
 
-    async def transport_step(
-        self, step_context: WaterfallStepContext
-    ) -> DialogTurnResult:
-        # WaterfallStep always finishes with the end of the Waterfall or with another dialog;
-        # here it is a Prompt Dialog. Running a prompt here means the next WaterfallStep will
-        # be run when the users response is received.
-        return await step_context.prompt(
-            ChoicePrompt.__name__,
-            PromptOptions(
-                prompt=MessageFactory.text("Please enter your mode of transport."),
-                choices=[Choice("Car"), Choice("Bus"), Choice("Bicycle")],
-            ),
-        )
-
-    # working so far, this is a Choice select
     async def options_step(
         self, step_context: WaterfallStepContext
     ) -> DialogTurnResult:
+        """ working so far, this is a Choice select """
         return await step_context.prompt(
             ChoicePrompt.__name__,
             PromptOptions(
@@ -85,25 +69,6 @@ class UserProfileDialog(ComponentDialog):
         return await step_context.prompt(
             TextPrompt.__name__,
             PromptOptions(prompt=MessageFactory.text("Please enter your name.")),
-        )
-
-    async def name_confirm_step(
-        self, step_context: WaterfallStepContext
-    ) -> DialogTurnResult:
-        step_context.values["name"] = step_context.result
-
-        # We can send messages to the user at any point in the WaterfallStep.
-        await step_context.context.send_activity(
-            MessageFactory.text(f"Thanks {step_context.result}")
-        )
-
-        # WaterfallStep always finishes with the end of the Waterfall or
-        # with another dialog; here it is a Prompt Dialog.
-        return await step_context.prompt(
-            ConfirmPrompt.__name__,
-            PromptOptions(
-                prompt=MessageFactory.text("Would you like to give your age?")
-            ),
         )
 
     async def age_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
@@ -247,6 +212,44 @@ class UserProfileDialog(ComponentDialog):
 
         # TODO: prepare next interaction here!
 
-        # WaterfallStep always finishes with the end of the Waterfall or with another
-        # dialog, here it is the end.
+        # WaterfallStep always finishes with the end of the Waterfall or
+        # with another dialog; here it is a Prompt Dialog.
+        return await step_context.prompt(
+            ConfirmPrompt.__name__,
+            PromptOptions(
+                prompt=MessageFactory.text("Is this correct?")
+            ),
+        )
+
+        # if we don't ask for confirmation, we terminate it:
+        # return await step_context.end_dialog()
+
+    async def check_is_info_ok(self, step_context: WaterfallStepContext) -> DialogTurnResult:
+        query = step_context.values["input"]
+
+        if step_context.result:
+            # User said "yes" so we can execute the operation.
+            await step_context.context.send_activity(
+                MessageFactory.text(f"Executing Operation.")
+            )
+
+            await step_context.context.send_activity(
+                MessageFactory.text(f"[Lie] Operation Executed. This is the details of the operation:")
+            )
+            await step_context.context.send_activity(
+                MessageFactory.text(f"[CARD WITH TRANSACTION DETAILS]")
+            )
+
+            return await step_context.end_dialog()
+
+        # User said "no"
+        # so we will have to terminate for now
+        # also we could reuse some of the previous steps.
+        await step_context.context.send_activity(
+            MessageFactory.text(f"I'm sorry I did not understand your order: '{query}'")
+        )
+        await step_context.context.send_activity(
+            MessageFactory.text(f"I am still learning, you know?")
+        )
+
         return await step_context.end_dialog()
