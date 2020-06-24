@@ -8,12 +8,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from botbuilder.schema import (
-    Activity,
-    ResourceResponse,
-    Mention
-)
-
 from botbuilder.schema._connector_client_enums import (
     ActivityTypes
 )
@@ -82,6 +76,32 @@ class ConversationReference(Model):
         self.channel_id = channel_id
         self.locale = locale
         self.service_url = service_url
+
+
+class Mention(Model):
+    """Mention information (entity type: "mention").
+
+    :param mentioned: The mentioned user
+    :type mentioned: ~botframework.connector.models.ChannelAccount
+    :param text: Sub Text which represents the mention (can be null or empty)
+    :type text: str
+    :param type: Type of this entity (RFC 3987 IRI)
+    :type type: str
+    """
+
+    _attribute_map = {
+        "mentioned": {"key": "mentioned", "type": "ChannelAccount"},
+        "text": {"key": "text", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+    }
+
+    def __init__(
+        self, *, mentioned=None, text: str = None, type: str = None, **kwargs
+    ) -> None:
+        super(Mention, self).__init__(**kwargs)
+        self.mentioned = mentioned
+        self.text = text
+        self.type = type
 
 
 class Activity(Model):
@@ -358,7 +378,7 @@ class Activity(Model):
         self.semantic_action = semantic_action
         self.caller_id = caller_id
 
-    def apply_conversation_reference(self, reference: ConversationReference, is_comming: bool = False) -> Activity:
+    def apply_conversation_reference(self, reference: ConversationReference, is_comming: bool = False):
         self.channel_id = reference.channel_id
         self.service_url = reference.service_url
         self.conversation = reference.conversation
@@ -381,70 +401,70 @@ class Activity(Model):
 
         return self
 
-    def as_contact_relation_update_activity(self) -> Activity:
+    def as_contact_relation_update_activity(self):
         return self if self.__is_activity(ActivityTypes.contact_relation_update) else None
 
-    def as_conversation_update_activity(self) -> Activity:
+    def as_conversation_update_activity(self):
         return self if self.__is_activity(ActivityTypes.conversation_update) else None
 
-    def as_end_of_conversation_activity(self) -> Activity:
+    def as_end_of_conversation_activity(self):
         return self if self.__is_activity(ActivityTypes.end_of_conversation) else None
 
-    def as_event_activity(self) -> Activity:
+    def as_event_activity(self):
         return self if self.__is_activity(ActivityTypes.event) else None
 
-    def as_handoff_activity(self) -> Activity:
+    def as_handoff_activity(self):
         return self if self.__is_activity(ActivityTypes.handoff) else None
 
-    def as_installation_update_activity(self) -> Activity:
+    def as_installation_update_activity(self):
         return self if self.__is_activity(ActivityTypes.installation_update) else None
 
-    def as_invoke_activity(self) -> Activity:
+    def as_invoke_activity(self):
         return self if self.__is_activity(ActivityTypes.invoke) else None
 
-    def as_message_activity(self) -> Activity:
+    def as_message_activity(self):
         return self if self.__is_activity(ActivityTypes.message) else None
 
-    def as_message_delete_activity(self) -> Activity:
+    def as_message_delete_activity(self):
         return self if self.__is_activity(ActivityTypes.message_delete) else None
 
-    def as_message_reaction_activity(self) -> Activity:
+    def as_message_reaction_activity(self):
         return self if self.__is_activity(ActivityTypes.message_reaction) else None
 
-    def as_message_update_activity(self) -> Activity:
+    def as_message_update_activity(self):
         return self if self.__is_activity(ActivityTypes.message_update) else None
 
-    def as_suggestion_activity(self) -> Activity:
+    def as_suggestion_activity(self):
         return self if self.__is_activity(ActivityTypes.suggestion) else None
 
-    def as_trace_activity(self) -> Activity:
+    def as_trace_activity(self):
         return self if self.__is_activity(ActivityTypes.trace) else None
 
-    def as_typing_activity(self) -> Activity:
+    def as_typing_activity(self):
         return self if self.__is_activity(ActivityTypes.typing) else None
 
-    def create_contact_relation_update_activity(self) -> Activity:
+    def create_contact_relation_update_activity(self):
         return Activity(type=ActivityTypes.contact_relation_update)
 
-    def create_conversation_update_activity(self) -> Activity:
+    def create_conversation_update_activity(self):
         return Activity(type=ActivityTypes.conversation_update)
 
-    def create_end_of_conversation__activity(self) -> Activity:
+    def create_end_of_conversation__activity(self):
         return Activity(type=ActivityTypes.end_of_conversation)
 
-    def create_event_activity(self) -> Activity:
+    def create_event_activity(self):
         return Activity(type=ActivityTypes.event)
 
-    def create_handoff_activity(self) -> Activity:
+    def create_handoff_activity(self):
         return Activity(type=ActivityTypes.handoff)
 
-    def create_invoke_activity(self) -> Activity:
+    def create_invoke_activity(self):
         return Activity(type=ActivityTypes.invoke)
 
-    def create_message_activity(self) -> Activity:
+    def create_message_activity(self):
         return Activity(type=ActivityTypes.message)
 
-    def create_reply(self, text: str = None, locale: str = None) -> Activity:
+    def create_reply(self, text: str = None, locale: str = None):
         return Activity(
             type=ActivityTypes.message,
             timestamp=datetime.utcnow(),
@@ -476,7 +496,7 @@ class Activity(Model):
             entities=[],
         )
 
-    def create_trace(self, name: str, value: object = None, valueType: str = None, label: str = None) -> Activity:
+    def create_trace(self, name: str, value: object = None, valueType: str = None, label: str = None):
         return Activity(
             type=ActivityTypes.trace,
             timestamp=datetime.utcnow(),
@@ -502,7 +522,7 @@ class Activity(Model):
             value=self.value
         ).as_trace_activity()
 
-    def create_trace_activity(self, name: str, value: object = None, valueType: str = None, label: str = None) -> Activity:
+    def create_trace_activity(self, name: str, value: object = None, valueType: str = None, label: str = None):
         return Activity(
             type=ActivityTypes.trace,
             name=self.name,
@@ -511,7 +531,7 @@ class Activity(Model):
             value=self.value
         )
 
-    def create_typing_activity(self) -> Activity:
+    def create_typing_activity(self):
         return Activity(type=ActivityTypes.typing)
 
     def get_channel_data(self):
@@ -581,7 +601,7 @@ class Activity(Model):
 
         return self.channel_data
 
-    def get_continuation_activity(self, source: ConversationReference) -> Activity:
+    def get_continuation_activity(self, source: ConversationReference):
         if source is None:
             raise Exception("source needs to be defined")
 
@@ -1592,32 +1612,6 @@ class MediaUrl(Model):
         super(MediaUrl, self).__init__(**kwargs)
         self.url = url
         self.profile = profile
-
-
-class Mention(Model):
-    """Mention information (entity type: "mention").
-
-    :param mentioned: The mentioned user
-    :type mentioned: ~botframework.connector.models.ChannelAccount
-    :param text: Sub Text which represents the mention (can be null or empty)
-    :type text: str
-    :param type: Type of this entity (RFC 3987 IRI)
-    :type type: str
-    """
-
-    _attribute_map = {
-        "mentioned": {"key": "mentioned", "type": "ChannelAccount"},
-        "text": {"key": "text", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-    }
-
-    def __init__(
-        self, *, mentioned=None, text: str = None, type: str = None, **kwargs
-    ) -> None:
-        super(Mention, self).__init__(**kwargs)
-        self.mentioned = mentioned
-        self.text = text
-        self.type = type
 
 
 class MessageReaction(Model):
