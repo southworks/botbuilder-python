@@ -8,6 +8,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
 from botbuilder.schema._connector_client_enums import ActivityTypes
 from botframework.connector.channels import Channels
 from datetime import datetime
