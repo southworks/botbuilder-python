@@ -104,6 +104,20 @@ class Mention(Model):
         self.type = type
 
 
+class ResourceResponse(Model):
+    """A response containing a resource ID.
+
+    :param id: Id of the resource
+    :type id: str
+    """
+
+    _attribute_map = {"id": {"key": "id", "type": "str"}}
+
+    def __init__(self, *, id: str = None, **kwargs) -> None:
+        super(ResourceResponse, self).__init__(**kwargs)
+        self.id = id
+
+
 class Activity(Model):
     """An Activity is the basic communication type for the Bot Framework 3.0
     protocol.
@@ -1837,20 +1851,6 @@ class ReceiptItem(Model):
         self.price = price
         self.quantity = quantity
         self.tap = tap
-
-
-class ResourceResponse(Model):
-    """A response containing a resource ID.
-
-    :param id: Id of the resource
-    :type id: str
-    """
-
-    _attribute_map = {"id": {"key": "id", "type": "str"}}
-
-    def __init__(self, *, id: str = None, **kwargs) -> None:
-        super(ResourceResponse, self).__init__(**kwargs)
-        self.id = id
 
 
 class SemanticAction(Model):
