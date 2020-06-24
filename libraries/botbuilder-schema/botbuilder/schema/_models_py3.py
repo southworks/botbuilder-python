@@ -8,6 +8,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+from botbuilder.schema import (
+    Activity,
+    ResourceResponse,
+    Mention
+)
 
 from botbuilder.schema._connector_client_enums import (
     ActivityTypes
@@ -21,7 +26,6 @@ from datetime import datetime
 
 from msrest.serialization import Model
 from msrest.exceptions import HttpOperationError
-
 
 
 class ConversationReference(Model):
