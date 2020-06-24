@@ -83,6 +83,7 @@ class ConversationReference(Model):
         self.locale = locale
         self.service_url = service_url
 
+
 class Activity(Model):
     """An Activity is the basic communication type for the Bot Framework 3.0
     protocol.
@@ -443,7 +444,7 @@ class Activity(Model):
     def create_message_activity(self) -> Activity:
         return Activity(type=ActivityTypes.message)
 
-    def create_reply(self, text: str = None, locale: str = None) -> Activity :
+    def create_reply(self, text: str = None, locale: str = None) -> Activity:
         return Activity(
             type=ActivityTypes.message,
             timestamp=datetime.utcnow(),
@@ -531,8 +532,8 @@ class Activity(Model):
         )
 
     def get_mentions(self) -> [Mention]:
-        entities_filter = filter(lambda e: str(e.type).lower() == 'mention',self.entities)
-        mentions = map(lambda e: Mention(type=e.type),entities_filter)
+        entities_filter = filter(lambda e: str(e.type).lower() == 'mention', self.entities)
+        mentions = map(lambda e: Mention(type=e.type), entities_filter)
         return list(mentions)
 
     def get_reply_conversation_reference(self, reply: ResourceResponse) -> ConversationReference:
@@ -556,7 +557,7 @@ class Activity(Model):
         return False
 
     def __is_activity(self, activityType: str) -> bool:
-        if(self.type is None):
+        if self.type is None:
             return False
 
         type = str(self.type).lower()
@@ -580,7 +581,6 @@ class Activity(Model):
 
         return self.channel_data
 
-
     def get_continuation_activity(self, source: ConversationReference) -> Activity:
         if source is None:
             raise Exception("source needs to be defined")
@@ -598,11 +598,11 @@ class Activity(Model):
 
     def is_start_activity(self) -> bool:
 
-        if self.channel_id in (Channels.skype):
+        if self.channel_id in Channels.skype:
             if self.type == ActivityTypes.contact_relation_update and self.action == 'add':
                 return True
             
-        elif self.channel_id in(
+        elif self.channel_id in (
             Channels.direct_line,
             Channels.emulator,
             Channels.webchat,
@@ -610,10 +610,11 @@ class Activity(Model):
         ):
             if self.type == ActivityTypes.conversation_update:
                 # When bot is added to the conversation (triggers start only once per conversation)
-                if(self.members_added is not None and any(e.id == self.recipient.id for e in self.members_added)):
+                if self.members_added is not None and any(e.id == self.recipient.id for e in self.members_added):
                     return True
 
         return False
+
 
 class AnimationCard(Model):
     """An animation card (Ex: gif or short video clip).
@@ -1201,6 +1202,7 @@ class ConversationParameters(Model):
         self.activity = activity
         self.channel_data = channel_data
         self.tenant_id = tenant_id
+
 
 class ConversationResourceResponse(Model):
     """A response containing a resource.
