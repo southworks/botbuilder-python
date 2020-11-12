@@ -31,7 +31,7 @@ steps:
     inlineScript: |
       Set-PSDebug -Trace 1;
       # set up resource group, bot channels registration, app service, app service plan
-      az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/deploymentTemplates/template-with-new-rg.json" --location "westus" --parameters groupName="$(BotGroup)" appId="$(AppId)" appSecret="$(AppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)"-$(Build.BuildId)" slackVerificationToken="$(SlackVerificationToken)" slackBotToken="$(SlackBotToken)" slackClientSigningSecret="$(SlackClientSigningSecret)" groupLocation="westus" newAppServicePlanLocation="westus";
+      az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/deploymentTemplates/template-with-new-rg.json" --location "westus" --parameters groupName="$(BotGroup)" appId="$(AppId)" appSecret="$(AppSecret)" botId="$(BotName)" botSku="F0" newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" slackVerificationToken="$(SlackVerificationToken)" slackBotToken="$(SlackBotToken)" slackClientSigningSecret="$(SlackClientSigningSecret)" groupLocation="westus" newAppServicePlanLocation="westus";
       Set-PSDebug -Trace 0;
 
 - script: |
