@@ -21,6 +21,7 @@ variables:
 #  SlackTestBotSlackClientSigningSecret: define this in Azure
 #  SlackTestBotSlackVerificationToken: define this in Azure
 
+steps:
 - task: AzureCLI@2
   displayName: 'create Azure resources - new RG template'
   inputs:
