@@ -13,8 +13,8 @@ import http.client
 
 
 class SlackClient(aiounittest.AsyncTestCase):
-    def __init__(self):
-        super().__init__()
+    async def test_send_and_receive_slack_message(self):
+        # Arrange
         self._slack_url_base: str = "https://slack.com/api"
         self._client: http.client
         self._slack_channel: str
@@ -22,10 +22,8 @@ class SlackClient(aiounittest.AsyncTestCase):
         self._slack_client_signing_secret: str
         self._slack_verification_token: str
         self._bot_name: str
-
-    async def test_send_and_receive_slack_message(self):
-        # Arrange
         self._get_environment_vars()
+
         echo_guid = str(uuid.uuid4())
         message = self._create_message(echo_guid)
 
