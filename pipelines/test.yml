@@ -1,5 +1,5 @@
 pool:
-  name: Hosted Ubuntu 1604
+  vmImage: 'windows-2019'
 
 variables:
   AppId: $(SlackTestBotAppId)
@@ -70,10 +70,18 @@ steps:
 #       }
 #   condition: succeededOrFailed()
 
+# - script: |
+#     python -m pip install --upgrade pip
+#     pip install -r ./libraries/functional-tests/tests/requirements.txt
+#     pip install pylint==2.4.4
+#     pip install black==19.10b0
+#     pip install pytest
+#   displayName: 'Install dependencies'
+
 - task: AzureCLI@1
   displayName: 'Delete Resources'
   inputs:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
-    inlineScript: 'az group delete -n "$(BotGroup)" --yes'
+    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
   condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
