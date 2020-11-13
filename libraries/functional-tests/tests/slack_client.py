@@ -42,7 +42,8 @@ class SlackClient(aiounittest.AsyncTestCase):
 
         while not ("Echo" in last_message) and i < 60:
             self._client = http.client.HTTPSConnection(
-                f"{self._slack_url_base}/conversations.history?token={self._slack_bot_token}&channel={self._slack_channel}")
+                f"{self._slack_url_base}/conversations.history?token={self._slack_bot_token}&channel={self._slack_channel}"
+            )
             self._client.request("GET", "/")
             response = json.loads(self._client.getresponse().read().decode())
 
@@ -57,11 +58,13 @@ class SlackClient(aiounittest.AsyncTestCase):
         timestamp = datetime.utcnow().utctimetuple()
         message = self._create_message(echo_guid)
         hub_signature = self._create_hub_signature()
-        client = http.client.HTTPSConnection(f"https://{self._bot_name}.azurewebsites.net/api/messages")
+        client = http.client.HTTPSConnection(
+            f"https://{self._bot_name}.azurewebsites.net/api/messages"
+        )
         headers = {
             "X-Slack-Request-Timestamp": timestamp,
             "X-Slack-Signature": hub_signature,
-            "Content-type": "application/json"
+            "Content-type": "application/json",
         }
         json_data = json.dumps(message)
 
@@ -74,7 +77,7 @@ class SlackClient(aiounittest.AsyncTestCase):
             "text": echo_guid,
             "user": "userId",
             "channel": self._slack_channel,
-            "channel_type": "im"
+            "channel_type": "im",
         }
 
         message = {
@@ -82,7 +85,7 @@ class SlackClient(aiounittest.AsyncTestCase):
             "team_id": "team_id",
             "api_app_id": "apiAppId",
             "event": slack_event,
-            "type": "event_callback"
+            "type": "event_callback",
         }
 
         return json.dumps(message)
@@ -94,7 +97,8 @@ class SlackClient(aiounittest.AsyncTestCase):
         hash_computed = hmac.new(
             self._slack_client_signing_secret,
             base_string.encode("utf-8"),
-            digestmod=hashlib.sha256).hexdigest()
+            digestmod=hashlib.sha256,
+        ).hexdigest()
 
         hash_result = "v0=%s" % (hash_computed,)
 
@@ -103,20 +107,22 @@ class SlackClient(aiounittest.AsyncTestCase):
     def _get_environment_vars(self):
         self._slack_channel = os.getenv("SlackChannel")
         if not self._slack_channel:
-            raise Exception("Environment variable \"SlackChannel\" not found.")
+            raise Exception('Environment variable "SlackChannel" not found.')
 
         self._slack_bot_token = os.getenv("SlackBotToken")
         if not self._slack_bot_token:
-            raise Exception("Environment variable \"SlackBotToken\" not found.")
+            raise Exception('Environment variable "SlackBotToken" not found.')
 
         self._slack_client_signing_secret = os.getenv("SlackClientSigningSecret")
         if not self._slack_client_signing_secret:
-            raise Exception("Environment variable \"SlackClientSigningSecret\" not found.")
+            raise Exception(
+                'Environment variable "SlackClientSigningSecret" not found.'
+            )
 
         self._slack_verification_token = os.getenv("SlackVerificationToken")
         if not self._slack_verification_token:
-            raise Exception("Environment variable \"SlackVerificationToken\" not found.")
+            raise Exception('Environment variable "SlackVerificationToken" not found.')
 
         self._bot_name = os.getenv("BotName")
         if not self._bot_name:
-            raise Exception("Environment variable \"BotName\" not found.")
+            raise Exception('Environment variable "BotName" not found.')
