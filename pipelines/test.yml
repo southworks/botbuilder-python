@@ -42,14 +42,14 @@ steps:
     git commit -m "cibuildtest"
     git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@$(BotName)-$(Build.BuildId).scm.azurewebsites.net:443/$(BotName)-$(Build.BuildId).git
     git push azure master
-  workingDirectory: '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot'
   displayName: 'Git bot deployment'
 
 - task: AzureCLI@2
   displayName: 'Validate git deployment'
   inputs:
     azureSubscription: $(AzureSubscription)
-    scriptType: ps
+    scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
       #Getting logs from Azure
