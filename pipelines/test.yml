@@ -25,6 +25,14 @@ steps:
 - powershell: 'gci env:* | sort-object name | Format-Table -AutoSize -Wrap'
   displayName: 'Display env vars'
 
+- task: AzureCLI@1
+  displayName: 'Delete Resources'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
 - task: AzureCLI@2
   displayName: 'create Azure resources - new RG template'
   inputs:
@@ -40,7 +48,6 @@ steps:
 - script: |
     git config --global user.name "GitPythonDeploymentUser"
     git config --global user.email GitPythonDeploymentUser@Pipeline.com
-    cd libraries/functional-tests/slackbot/
     git init
     git add .
     git commit -m "cibuildtest"
@@ -74,24 +81,20 @@ steps:
       }
   condition: succeededOrFailed()
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -e ./libraries/functional-tests/tests/requirements.txt
-    pip install coveralls
-    pip install pylint==2.4.4
-    pip install black==19.10b0
-    pip install pytest
-    pip install pytest-cov
-  displayName: 'Install dependencies'
+# - script: |
+#     python -m pip install --upgrade pip
+#     pip install -e ./libraries/functional-tests/tests/requirements.txt
+#     pip install pytest
+#   displayName: 'Install dependencies'
 
-- script: |
-    pytest --junitxml=junit/test-results.$(PYTHON_VERSION).xml --cov-config=.coveragerc --cov --cov-report=xml --cov-report=html
-  displayName: Pytest
+# - script: |
+#     pytest
+#   displayName: Pytest
 
-- task: AzureCLI@1
-  displayName: 'Delete Resources'
-  inputs:
-    azureSubscription: $(AzureSubscription)
-    scriptLocation: inlineScript
-    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+# - task: AzureCLI@1
+#   displayName: 'Delete Resources'
+#   inputs:
+#     azureSubscription: $(AzureSubscription)
+#     scriptLocation: inlineScript
+#     inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+#   condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
