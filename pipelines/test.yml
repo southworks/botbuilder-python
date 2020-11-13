@@ -22,6 +22,14 @@ variables:
 #  SlackTestBotSlackVerificationToken: define this in Azure
 
 steps:
+- task: AzureCLI@1
+  displayName: 'Delete Resources'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
 - powershell: 'gci env:* | sort-object name | Format-Table -AutoSize -Wrap'
   displayName: 'Display env vars'
 
@@ -56,7 +64,7 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       #Getting logs from Azure
-      az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotName)-rg --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
+      az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotGroup) --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
       Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
       $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
       $content = Get-Content $file
