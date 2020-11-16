@@ -35,18 +35,14 @@ class SlackClient(aiounittest.AsyncTestCase):
         # Assert
         self.assertEqual(f"Echo: {echo_guid}", response)
 
-    async def _receive_message_async(self, response):
+    async def _receive_message_async(self):
         last_message = ""
         i = 0
 
         while not ("Echo" in last_message) and i < 60:
-            self._client = http.client.HTTPSConnection(
-                f"{self._slack_url_base}/conversations.history?token={self._slack_bot_token}&channel={self._slack_channel}"
-            )
-            self._client.request("GET", "/")
-            response = json.loads(self._client.getresponse().read().decode())
-
-            last_message = response["Messages"][0]
+            url = f"{self._slack_url_base}/conversations.history?token={self._slack_bot_token}&channel={self._slack_channel}"
+            response = requests.get(url,)
+            last_message = response.json()["messages"][0]["text"]
 
             time.sleep(1)
             i += 1
@@ -57,23 +53,14 @@ class SlackClient(aiounittest.AsyncTestCase):
         timestamp = str(int(datetime.datetime.utcnow().timestamp()))
         message = self._create_message(echo_guid)
         hub_signature = self._create_hub_signature(message, timestamp)
-        client = http.client.HTTPSConnection(
-           f"{self._bot_name}.azurewebsites.net"
-        )
         headers = {
             "X-Slack-Request-Timestamp": timestamp,
             "X-Slack-Signature": hub_signature,
             "Content-type": "application/json",
         }
-        json_data = json.dumps(message)
+        url = f"https://{self._bot_name}.azurewebsites.net/api/messages"
 
-        client.request("POST", "/api/messages", body=json_data, headers=headers)
-
-        response = client.getresponse().read()
-        # bot_response = requests.post(
-        #     f"https://{self._bot_name}.azurewebsites.net/api/messages",
-        #     headers=headers,
-        #     json=json_data)
+        requests.post(url, headers=headers, data=message)
 
     def _create_message(self, echo_guid: str):
         slack_event = {
@@ -96,18 +83,16 @@ class SlackClient(aiounittest.AsyncTestCase):
         return json.dumps(message)
 
     def _create_hub_signature(self, message: str, timestamp: str):
-        signature = {"v0", timestamp, message}
+        signature = ["v0", timestamp, message]
         base_string = ":".join(signature)
 
-        hash_computed = hmac.new(
-            bytes(self._slack_client_signing_secret, encoding='utf8'),
-            base_string.encode("utf-8"),
+        computed_signature = "V0=" + hmac.new(
+            bytes(self._slack_client_signing_secret, encoding="utf8"),
+            msg=bytes(base_string, "utf-8"),
             digestmod=hashlib.sha256,
-        ).hexdigest()
+        ).hexdigest().upper().replace("-", "")
 
-        hash_result = "v0=%s" % (hash_computed,)
-
-        return hash_result
+        return computed_signature
 
     def _get_environment_vars(self):
         self._slack_channel = os.getenv("SlackChannel")
