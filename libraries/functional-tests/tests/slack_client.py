@@ -6,26 +6,24 @@ import hmac
 import json
 import os
 import uuid
-import aiounittest
 import datetime
 import time
-import http.client
-
+import aiounittest
 import requests
 
 
 class SlackClient(aiounittest.AsyncTestCase):
+
+    _slack_url_base: str = "https://slack.com/api"
+    _slack_channel: str
+    _slack_bot_token: str
+    _slack_client_signing_secret: str
+    _slack_verification_token: str
+    _bot_name: str
+
     async def test_send_and_receive_slack_message(self):
         # Arrange
-        self._slack_url_base: str = "https://slack.com/api"
-        self._client: http.client
-        self._slack_channel: str
-        self._slack_bot_token: str
-        self._slack_client_signing_secret: str
-        self._slack_verification_token: str
-        self._bot_name: str
         self._get_environment_vars()
-
         echo_guid = str(uuid.uuid4())
 
         # Act
@@ -39,8 +37,11 @@ class SlackClient(aiounittest.AsyncTestCase):
         last_message = ""
         i = 0
 
-        while not ("Echo" in last_message) and i < 60:
-            url = f"{self._slack_url_base}/conversations.history?token={self._slack_bot_token}&channel={self._slack_channel}"
+        while "Echo" not in last_message and i < 60:
+            url = (
+                f"{self._slack_url_base}/conversations.history?token="
+                f"{self._slack_bot_token}&channel={self._slack_channel}"
+            )
             response = requests.get(url,)
             last_message = response.json()["messages"][0]["text"]
 
