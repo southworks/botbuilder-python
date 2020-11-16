@@ -1,13 +1,42 @@
+#
+# Runs functional tests against the Slack channel.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
 pool:
-  vmImage: 'windows-2019'
+  vmImage: $[ coalesce( variables['VMImage'], 'windows-2019' ) ] # or 'windows-latest' or 'vs2017-win2016'
+
+# trigger: # ci trigger
+#   batch: true
+#   branches:
+#     include:
+#     - main
+#   paths:
+#     include:
+#     - '*'
+#     exclude:
+#     - doc/
+#     - specs/
+#     - Changes.md
+#     - LICENSE
+#     - README.md
+#     - UsingMyGet.md
+
+# pr: # pr trigger
+#   branches:
+#     include:
+#     - main
+#   paths:
+#     include:
+#     - build/yaml/botbuilder-dotnet-ci-slack-test.yml
 
 variables:
   AppId: $(SlackTestBotAppId)
   AppSecret: $(SlackTestBotAppSecret)
   BotGroup: $(SlackTestBotBotGroup)
   BotName: $(SlackTestBotBotName)
-  BuildConfiguration: 'debug'
-  BuildPlatform: 'any cpu'
   SlackBotToken: $(SlackTestBotSlackBotToken)
   SlackClientSigningSecret: $(SlackTestBotSlackClientSigningSecret)
   SlackVerificationToken: $(SlackTestBotSlackVerificationToken)
@@ -33,10 +62,6 @@ steps:
     inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
   condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
-- powershell: |
-    7z a -tzip "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/bot.zip"  "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/*" -aoa
-  displayName: 'Zip Bot'
-
 - task: AzureCLI@2
   displayName: 'create Azure resources - new RG template'
   inputs:
@@ -48,6 +73,10 @@ steps:
       # set up resource group, bot channels registration, app service, app service plan
       az deployment sub create --name "$(BotName)" --template-file "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/deploymentTemplates/template-with-new-rg.json" --location "westus" --parameters groupName="$(BotGroup)" appId="$(AppId)" appSecret="$(AppSecret)" botId="$(BotName)" botSku="F0" newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" slackVerificationToken="$(SlackVerificationToken)" slackBotToken="$(SlackBotToken)" slackClientSigningSecret="$(SlackClientSigningSecret)" groupLocation="westus" newAppServicePlanLocation="westus";
       Set-PSDebug -Trace 0;
+
+- powershell: |
+    7z a -tzip "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/bot.zip"  "$(System.DefaultWorkingDirectory)/libraries/functional-tests/slackbot/*" -aoa
+  displayName: 'Zip Bot'
 
 - task: AzureCLI@1
   displayName: 'Deploy bot'

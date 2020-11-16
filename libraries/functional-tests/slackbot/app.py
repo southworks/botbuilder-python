@@ -68,14 +68,8 @@ async def messages(req: Request) -> Response:
     return await ADAPTER.process(req, BOT.on_turn)
 
 
-# Listen for incoming slack events on /api/slack
-async def slack(req: Request) -> Response:
-    return await ADAPTER.process(req, BOT.on_turn)
-
-
 APP = web.Application(middlewares=[aiohttp_error_middleware])
 APP.router.add_post("/api/messages", messages)
-APP.router.add_post("/api/slack", slack)
 
 if __name__ == "__main__":
     try:
