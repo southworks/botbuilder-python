@@ -7,9 +7,11 @@ import json
 import os
 import uuid
 import aiounittest
-from datetime import datetime
-from time import sleep
+import datetime
+import time
 import http.client
+
+import requests
 
 
 class SlackClient(aiounittest.AsyncTestCase):
@@ -25,16 +27,15 @@ class SlackClient(aiounittest.AsyncTestCase):
         self._get_environment_vars()
 
         echo_guid = str(uuid.uuid4())
-        message = self._create_message(echo_guid)
 
         # Act
-        await self._send_message_async(message)
+        await self._send_message_async(echo_guid)
         response = await self._receive_message_async()
 
         # Assert
         self.assertEqual(f"Echo: {echo_guid}", response)
 
-    async def _receive_message_async(self):
+    async def _receive_message_async(self, response):
         last_message = ""
         i = 0
 
@@ -47,17 +48,17 @@ class SlackClient(aiounittest.AsyncTestCase):
 
             last_message = response["Messages"][0]
 
-            sleep(1)
+            time.sleep(1)
             i += 1
 
         return last_message
 
     async def _send_message_async(self, echo_guid: str):
-        timestamp = datetime.utcnow().utctimetuple()
+        timestamp = str(int(datetime.datetime.utcnow().timestamp()))
         message = self._create_message(echo_guid)
-        hub_signature = self._create_hub_signature()
+        hub_signature = self._create_hub_signature(message, timestamp)
         client = http.client.HTTPSConnection(
-            f"https://{self._bot_name}.azurewebsites.net/api/messages"
+           f"{self._bot_name}.azurewebsites.net"
         )
         headers = {
             "X-Slack-Request-Timestamp": timestamp,
@@ -66,7 +67,13 @@ class SlackClient(aiounittest.AsyncTestCase):
         }
         json_data = json.dumps(message)
 
-        client.request("POST", "/", json_data, headers)
+        client.request("POST", "/api/messages", body=json_data, headers=headers)
+
+        response = client.getresponse().read()
+        # bot_response = requests.post(
+        #     f"https://{self._bot_name}.azurewebsites.net/api/messages",
+        #     headers=headers,
+        #     json=json_data)
 
     def _create_message(self, echo_guid: str):
         slack_event = {
@@ -93,7 +100,7 @@ class SlackClient(aiounittest.AsyncTestCase):
         base_string = ":".join(signature)
 
         hash_computed = hmac.new(
-            self._slack_client_signing_secret,
+            bytes(self._slack_client_signing_secret, encoding='utf8'),
             base_string.encode("utf-8"),
             digestmod=hashlib.sha256,
         ).hexdigest()
