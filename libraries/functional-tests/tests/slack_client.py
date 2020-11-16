@@ -13,17 +13,9 @@ import requests
 
 
 class SlackClient(aiounittest.AsyncTestCase):
-
-    _slack_url_base: str = "https://slack.com/api"
-    _slack_channel: str
-    _slack_bot_token: str
-    _slack_client_signing_secret: str
-    _slack_verification_token: str
-    _bot_name: str
-
     async def test_send_and_receive_slack_message(self):
         # Arrange
-        self._get_environment_vars()
+        # self._get_environment_vars()
         echo_guid = str(uuid.uuid4())
 
         # Act
@@ -95,25 +87,28 @@ class SlackClient(aiounittest.AsyncTestCase):
 
         return computed_signature
 
-    def _get_environment_vars(self):
-        self._slack_channel = os.getenv("SlackChannel")
-        if not self._slack_channel:
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls._slack_url_base: str = "https://slack.com/api"
+
+        cls._slack_channel = os.getenv("SlackChannel")
+        if not cls._slack_channel:
             raise Exception('Environment variable "SlackChannel" not found.')
 
-        self._slack_bot_token = os.getenv("SlackBotToken")
-        if not self._slack_bot_token:
+        cls._slack_bot_token = os.getenv("SlackBotToken")
+        if not cls._slack_bot_token:
             raise Exception('Environment variable "SlackBotToken" not found.')
 
-        self._slack_client_signing_secret = os.getenv("SlackClientSigningSecret")
-        if not self._slack_client_signing_secret:
+        cls._slack_client_signing_secret = os.getenv("SlackClientSigningSecret")
+        if not cls._slack_client_signing_secret:
             raise Exception(
                 'Environment variable "SlackClientSigningSecret" not found.'
             )
 
-        self._slack_verification_token = os.getenv("SlackVerificationToken")
-        if not self._slack_verification_token:
+        cls._slack_verification_token = os.getenv("SlackVerificationToken")
+        if not cls._slack_verification_token:
             raise Exception('Environment variable "SlackVerificationToken" not found.')
 
-        self._bot_name = os.getenv("BotName")
-        if not self._bot_name:
+        cls._bot_name = os.getenv("BotName")
+        if not cls._bot_name:
             raise Exception('Environment variable "BotName" not found.')
